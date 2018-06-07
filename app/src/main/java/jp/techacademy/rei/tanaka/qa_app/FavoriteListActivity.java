@@ -46,7 +46,7 @@ public class FavoriteListActivity extends AppCompatActivity
     private ChildEventListener mFavoriteEventListener = new ChildEventListener() {
         @Override
         public void  onChildAdded(DataSnapshot dataSnapshot, String s) {
-            HashMap  favoriteMap = (HashMap) dataSnapshot.getValue();
+          favoriteMap = (HashMap) dataSnapshot.getValue();
             String title = (String)  favoriteMap.get("title");
             String body = (String)  favoriteMap.get("body");
             String name = (String)  favoriteMap.get("name");
@@ -98,7 +98,7 @@ public class FavoriteListActivity extends AppCompatActivity
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-            if (favoriteMap.containsKey(dataSnapshot.getKey())) {
+            if (favoriteMap != null && favoriteMap.containsKey(dataSnapshot.getKey())) {
 
 
                 HashMap map = (HashMap) dataSnapshot.getValue();
@@ -219,6 +219,10 @@ public class FavoriteListActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Menu menu = navigationView.getMenu();
+        MenuItem favoriteItem = menu.findItem(R.id.favorite);
+        favoriteItem.setVisible(false);
 
         // --- ここから ---
         // Firebase
