@@ -33,6 +33,7 @@ public class FavoriteListActivity extends AppCompatActivity
 
     private Toolbar mToolbar;
     private int mGenre = 0;
+    private static boolean done = false;
 
     // --- ここから ---
     private DatabaseReference mDatabaseReference;
@@ -42,6 +43,8 @@ public class FavoriteListActivity extends AppCompatActivity
     private ArrayList<Question> mQuestionArrayList;
     private FavoritesListAdapter mAdapter;
     private HashMap favoriteMap;
+    private  HashMap map;
+
 
     private ChildEventListener mFavoriteEventListener = new ChildEventListener() {
         @Override
@@ -71,6 +74,9 @@ public class FavoriteListActivity extends AppCompatActivity
                     answerArrayList.add(answer);
                 }
             }
+                mGenreRef = mDatabaseReference.child(Const.ContentsPAH).child(String.valueOf(mGenre)).child(String.valueOf(dataSnapshot.getKey()));
+                mGenreRef.addChildEventListener(mEventListener);
+
         }
 
         @Override
@@ -97,9 +103,6 @@ public class FavoriteListActivity extends AppCompatActivity
     private ChildEventListener mEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-            if (favoriteMap != null && favoriteMap.containsKey(dataSnapshot.getKey())) {
-
 
                 HashMap map = (HashMap) dataSnapshot.getValue();
                 String title = (String) map.get("title");
@@ -130,7 +133,7 @@ public class FavoriteListActivity extends AppCompatActivity
                 Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
                 mQuestionArrayList.add(question);
                 mAdapter.notifyDataSetChanged();
-            }
+
         }
 
         @Override
@@ -301,8 +304,7 @@ public class FavoriteListActivity extends AppCompatActivity
         }
         mFavoriteGenreRef = mDatabaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mGenre));
         mFavoriteGenreRef.addChildEventListener(mFavoriteEventListener);
-        mGenreRef = mDatabaseReference.child(Const.ContentsPAH).child(String.valueOf(mGenre));
-        mGenreRef.addChildEventListener(mEventListener);
+
         // --- ここまで追加する ---
         return true;
     }
